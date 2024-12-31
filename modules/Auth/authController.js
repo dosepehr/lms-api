@@ -2,6 +2,7 @@ const expressAsyncHandler = require('express-async-handler');
 const User = require('./../User/userModel');
 const AppError = require('../../utils/AppError');
 const verifyToken = require('../../utils/verifyToken');
+const signToken = require('../../utils/signToken');
 
 exports.protect = expressAsyncHandler(async (req, res, next) => {
     // 1) Getting token and check of it's there
@@ -54,3 +55,20 @@ exports.restrictTo = (...roles) => {
         next();
     };
 };
+
+exports.signup = expressAsyncHandler(async (req, res, next) => {
+    const userData = {
+        name: req.body.name,
+        username: req.body.username,
+        email: req.body.email,
+        phone: req.body.phone,
+        password: req.body.password,
+        confirmPassword: req.body.confirmPassword,
+    };
+    // await validation
+    const newUser = await User.create(userData);
+    const token = signToken({
+        id: newUser._id,
+    });
+    console.log(token);
+});

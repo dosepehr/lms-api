@@ -53,7 +53,13 @@ const userSchema = new mongoose.Schema(
         timestamps: true,
     },
 );
+userSchema.pre('save', function (next) {
+    this.confirmPassword = undefined;
+    if (!this.isModified('password')) return next();
 
+    this.passwordChangedAt = Date.now() - 1000;
+    next();
+});
 const User = mongoose.model('User', userSchema);
 
 module.exports = User;
