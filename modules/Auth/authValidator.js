@@ -42,10 +42,9 @@ const loginUserSchema = yup.object().shape({
         .string()
         .required('The password field is required.')
         .min(8, 'The password must be at least 8 characters long.'),
-    email: yup
+    identifier: yup
         .string()
-        .email('Please provide a valid email address.')
-        .required('The email field is required.'),
+        .required('The identifier field is required.'),
 });
 
 module.exports = { loginUserSchema, signupUserSchema };

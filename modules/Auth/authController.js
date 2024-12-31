@@ -5,7 +5,8 @@ const verifyToken = require('../../utils/verifyToken');
 const signToken = require('../../utils/signToken');
 const hashPassword = require('../../utils/hashPassword');
 const formatPhoneNumber = require('../../utils/formatPhoneNumber');
-const { signupUserSchema } = require('./authValidator');
+const { signupUserSchema, loginUserSchema } = require('./authValidator');
+const comparePassword = require('../../utils/comparePassword');
 
 exports.protect = expressAsyncHandler(async (req, res, next) => {
     // 1) Getting token and check of it's there
@@ -90,15 +91,58 @@ exports.signup = expressAsyncHandler(async (req, res, next) => {
         });
 });
 exports.login = expressAsyncHandler(async (req, res, next) => {
+    const JWT_EXPIRES = +process.env.JWT_EXPIRES.slice(0, 2);
+
     const userData = {
         identifier: req.body.identifier,
         password: req.body.password,
     };
+    await loginUserSchema.validate(userData);
     // find a user that its email or username matchs identifier
-    const user = await User.findOne({})
+    const user = await User.findOne({
+        $or: [
+            { email: userData.identifier },
+            { username: userData.identifier },
+        ],
+    }).select('password ban');
+    if (!user) {
+        res.status(404).json({
+            status: false,
+            message: 'no user found',
+        });
+    }
+    if (user.ban) {
+        res.status(403).json({
+            status: false,
+            message: 'banned user',
+        });
+    }
+    const canLogin = await comparePassword(userData.password, user.password);
+    if (canLogin) {
+        const token = signToken({
+            id: user._id,
+        });
+        res.cookie('auth', `Bearer ${token}`, {
+            expires: new Date(Date.now() + JWT_EXPIRES * 24 * 60 * 60 * 1000),
+            secure: req.secure, // if https was on
+            httpOnly: true,
+        })
+            .status(201)
+            .json({
+                status: true,
+                message: user,
+            });
+    }
+    res.status(404).json({
+        status: false,
+        message: 'no user found',
+    });
 });
 exports.changeBanStatus = expressAsyncHandler(async (req, res, next) => {
     const { phone } = req.body;
+    if (!phone || typeof phone != 'string') {
+        return next(new AppError(`Invalid input data`, 400));
+    }
     const user = await User.findOne({
         phone: formatPhoneNumber(phone),
     }).select('ban');

@@ -3,11 +3,13 @@ const {
     protect,
     restrictTo,
     changeBanStatus,
-    signup
+    signup,
+    login,
 } = require('./../Auth/authController');
 
 const authRouter = express.Router();
 
 authRouter.route('/signup').post(signup);
+authRouter.route('/login').post(login);
 authRouter.route('/ban').put(protect, restrictTo('admin'), changeBanStatus);
 module.exports = authRouter;

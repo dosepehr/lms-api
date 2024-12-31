@@ -1,5 +1,5 @@
 formatPhoneNumber = (phoneNumber) => {
-    if (phoneNumber.startsWith('0')) return phoneNumber;
+    if (phoneNumber?.startsWith('0')) return phoneNumber;
     return `0${phoneNumber}`;
 };
 
