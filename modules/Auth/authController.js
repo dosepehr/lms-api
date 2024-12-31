@@ -3,6 +3,7 @@ const User = require('./../User/userModel');
 const AppError = require('../../utils/AppError');
 const verifyToken = require('../../utils/verifyToken');
 const signToken = require('../../utils/signToken');
+const hashPassword = require('../../utils/hashPassword');
 
 exports.protect = expressAsyncHandler(async (req, res, next) => {
     // 1) Getting token and check of it's there
@@ -57,6 +58,7 @@ exports.restrictTo = (...roles) => {
 };
 
 exports.signup = expressAsyncHandler(async (req, res, next) => {
+    const JWT_EXPIRES = +process.env.JWT_EXPIRES.slice(0, 2);
     const userData = {
         name: req.body.name,
         username: req.body.username,
@@ -66,9 +68,21 @@ exports.signup = expressAsyncHandler(async (req, res, next) => {
         confirmPassword: req.body.confirmPassword,
     };
     // await validation
+    // hash password
+    const hashedPassword = await hashPassword(req.body.password);
+    userData.password = hashedPassword;
     const newUser = await User.create(userData);
     const token = signToken({
         id: newUser._id,
     });
-    console.log(token);
+    // send token by cookie
+    res.cookie('auth', token, {
+        expires: new Date(Date.now() + JWT_EXPIRES * 24 * 60 * 60 * 1000),
+        secure: req.secure, // if https was on
+        httpOnly: true,
+    })
+        .status(201)
+        .json({
+            status: true,
+        });
 });
