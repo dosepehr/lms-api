@@ -4,6 +4,8 @@ const AppError = require('../../utils/AppError');
 const verifyToken = require('../../utils/verifyToken');
 const signToken = require('../../utils/signToken');
 const hashPassword = require('../../utils/hashPassword');
+const formatPhoneNumber = require('../../utils/formatPhoneNumber');
+const { signupUserSchema } = require('./authValidator');
 
 exports.protect = expressAsyncHandler(async (req, res, next) => {
     // 1) Getting token and check of it's there
@@ -63,11 +65,18 @@ exports.signup = expressAsyncHandler(async (req, res, next) => {
         name: req.body.name,
         username: req.body.username,
         email: req.body.email,
-        phone: req.body.phone,
+        phone: formatPhoneNumber(req.body.phone),
         password: req.body.password,
         confirmPassword: req.body.confirmPassword,
     };
-    // await validation
+    await signupUserSchema.validate({
+        name: req.body.name,
+        username: req.body.username,
+        email: req.body.email,
+        phone: formatPhoneNumber(req.body.phone),
+        password: req.body.password,
+        confirmPassword: req.body.confirmPassword,
+    });
     // hash password
     const hashedPassword = await hashPassword(req.body.password);
     userData.password = hashedPassword;
