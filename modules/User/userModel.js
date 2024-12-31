@@ -1,8 +1,11 @@
 const mongoose = require('mongoose');
-const crypto = require('crypto');
 const userSchema = new mongoose.Schema(
     {
         name: {
+            type: String,
+            required: true,
+        },
+        username: {
             type: String,
             required: true,
         },
@@ -12,9 +15,15 @@ const userSchema = new mongoose.Schema(
             unique: true,
             lowercase: true,
         },
+        phone: {
+            type: String,
+            required: true,
+            unique: true,
+            lowercase: true,
+        },
         role: {
             type: String,
-            enum: ['user', 'guide', 'lead-guide', 'admin'],
+            enum: ['user', 'teacher', 'admin'],
             default: 'user',
         },
         photo: {

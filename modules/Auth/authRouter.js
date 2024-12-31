@@ -1,9 +1,6 @@
 const express = require('express');
-const {
-    protect,
-    restrictTo,
-} = require('./../Auth/authController');
+const { protect, restrictTo } = require('./../Auth/authController');
 
-const userRouter = express.Router();
+const authRouter = express.Router();
 
-module.exports = userRouter;
+module.exports = authRouter;
