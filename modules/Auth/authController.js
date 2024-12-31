@@ -79,7 +79,7 @@ exports.signup = expressAsyncHandler(async (req, res, next) => {
         id: newUser._id,
     });
     // send token by cookie
-    res.cookie('auth', token, {
+    res.cookie('auth', `Bearer ${token}`, {
         expires: new Date(Date.now() + JWT_EXPIRES * 24 * 60 * 60 * 1000),
         secure: req.secure, // if https was on
         httpOnly: true,
@@ -88,4 +88,23 @@ exports.signup = expressAsyncHandler(async (req, res, next) => {
         .json({
             status: true,
         });
+});
+
+exports.changeBanStatus = expressAsyncHandler(async (req, res, next) => {
+    const { phone } = req.body;
+    const user = await User.findOne({
+        phone: formatPhoneNumber(phone),
+    }).select('ban');
+    if (!user) {
+        res.status(404).json({
+            status: false,
+            message: 'no user found with this mobile number',
+        });
+    }
+    user.ban = !user.ban;
+    await user.save();
+    res.status(200).json({
+        status: true,
+        message: user.ban ? 'user banned' : 'user is free',
+    });
 });
