@@ -3,8 +3,8 @@ const {
     protect,
     restrictTo,
     changeBanStatus,
+    signup
 } = require('./../Auth/authController');
-const { signup } = require('./authController');
 
 const authRouter = express.Router();
 

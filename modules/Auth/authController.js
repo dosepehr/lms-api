@@ -89,7 +89,14 @@ exports.signup = expressAsyncHandler(async (req, res, next) => {
             status: true,
         });
 });
-
+exports.login = expressAsyncHandler(async (req, res, next) => {
+    const userData = {
+        identifier: req.body.identifier,
+        password: req.body.password,
+    };
+    // find a user that its email or username matchs identifier
+    const user = await User.findOne({})
+});
 exports.changeBanStatus = expressAsyncHandler(async (req, res, next) => {
     const { phone } = req.body;
     const user = await User.findOne({
