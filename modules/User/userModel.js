@@ -34,17 +34,14 @@ const userSchema = new mongoose.Schema(
         password: {
             type: String,
             required: true,
-            select: false,
         },
         active: {
             type: Boolean,
             default: true,
-            select: false,
         },
         ban: {
             type: Boolean,
             default: false,
-            select: false,
         },
         passwordChangedAt: Date,
         passwordResetToken: String,

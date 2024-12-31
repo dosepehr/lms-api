@@ -31,7 +31,9 @@ exports.protect = expressAsyncHandler(async (req, res, next) => {
     if (!currentUser) {
         return next(new AppError('Invalid token', 401));
     }
-
+    if (currentUser.ban) {
+        return next(new AppError('Banned user', 403));
+    }
     // 4) Check if user changed password after the token was issued
     if (currentUser.changedPasswordAfter(decoded.iat)) {
         return next(
@@ -88,6 +90,7 @@ exports.signup = expressAsyncHandler(async (req, res, next) => {
         .status(201)
         .json({
             status: true,
+            token,
         });
 });
 exports.login = expressAsyncHandler(async (req, res, next) => {
@@ -130,7 +133,7 @@ exports.login = expressAsyncHandler(async (req, res, next) => {
             .status(201)
             .json({
                 status: true,
-                message: user,
+                token,
             });
     }
     res.status(404).json({
