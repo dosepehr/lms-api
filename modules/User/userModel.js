@@ -41,6 +41,11 @@ const userSchema = new mongoose.Schema(
             default: true,
             select: false,
         },
+        ban: {
+            type: Boolean,
+            default: false,
+            select: false,
+        },
         passwordChangedAt: Date,
         passwordResetToken: String,
         passwordResetExpires: Date,
@@ -57,6 +62,19 @@ userSchema.pre('save', function (next) {
     this.passwordChangedAt = Date.now() - 1000;
     next();
 });
+userSchema.methods.changedPasswordAfter = function (JWTTimestamp) {
+    if (this.passwordChangedAt) {
+        const changedTimestamp = parseInt(
+            this.passwordChangedAt.getTime() / 1000,
+            10,
+        );
+
+        return JWTTimestamp < changedTimestamp;
+    }
+
+    // False means NOT changed
+    return false;
+};
 const User = mongoose.model('User', userSchema);
 
 module.exports = User;
