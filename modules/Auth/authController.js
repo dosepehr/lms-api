@@ -69,17 +69,11 @@ exports.signup = expressAsyncHandler(async (req, res, next) => {
         password: req.body.password,
         confirmPassword: req.body.confirmPassword,
     };
-    await signupUserSchema.validate({
-        name: req.body.name,
-        username: req.body.username,
-        email: req.body.email,
-        phone: formatPhoneNumber(req.body.phone),
-        password: req.body.password,
-        confirmPassword: req.body.confirmPassword,
-    });
+    await signupUserSchema.validate(userData);
     // hash password
     const hashedPassword = await hashPassword(req.body.password);
     userData.password = hashedPassword;
+    userData.confirmPassword = undefined;
     const newUser = await User.create(userData);
     const token = signToken({
         id: newUser._id,

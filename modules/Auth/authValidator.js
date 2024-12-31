@@ -1,8 +1,16 @@
 const yup = require('yup');
 
 const signupUserSchema = yup.object().shape({
-    name: yup.string().required('The name field is required.'),
-    username: yup.string().required('The username field is required.'),
+    name: yup
+        .string()
+        .required('The name field is required.')
+        .min(3, 'The name must be at least 3 characters long.')
+        .max(50, 'The name must be at most 50 characters long.'),
+    username: yup
+        .string()
+        .required('The username field is required.')
+        .min(3, 'The username must be at least 3 characters long.')
+        .max(30, 'The username must be at most 30 characters long.'),
 
     email: yup
         .string()
@@ -20,8 +28,8 @@ const signupUserSchema = yup.object().shape({
 
     password: yup
         .string()
-        .required('The password field is required.')
-        .min(8, 'The password must be at least 8 characters long.'),
+        .min(8, 'The password must be at least 8 characters long.')
+        .max(128, 'The password must be at most 128 characters long.'),
 
     confirmPassword: yup
         .string()

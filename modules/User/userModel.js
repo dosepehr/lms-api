@@ -8,6 +8,7 @@ const userSchema = new mongoose.Schema(
         username: {
             type: String,
             required: true,
+            unique: true,
         },
         email: {
             type: String,
@@ -33,10 +34,7 @@ const userSchema = new mongoose.Schema(
         password: {
             type: String,
             required: true,
-        },
-        confirmPassword: {
-            type: String,
-            required: true,
+            select: false,
         },
         active: {
             type: Boolean,
@@ -54,7 +52,6 @@ const userSchema = new mongoose.Schema(
     },
 );
 userSchema.pre('save', function (next) {
-    this.confirmPassword = undefined;
     if (!this.isModified('password')) return next();
 
     this.passwordChangedAt = Date.now() - 1000;
