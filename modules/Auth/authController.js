@@ -5,7 +5,11 @@ const verifyToken = require('../../utils/verifyToken');
 const signToken = require('../../utils/signToken');
 const hashPassword = require('../../utils/hashPassword');
 const formatPhoneNumber = require('../../utils/formatPhoneNumber');
-const { signupUserSchema, loginUserSchema } = require('./authValidator');
+const {
+    signupUserSchema,
+    loginUserSchema,
+    changeRoleSchema,
+} = require('./authValidator');
 const comparePassword = require('../../utils/comparePassword');
 
 exports.protect = expressAsyncHandler(async (req, res, next) => {
@@ -16,7 +20,7 @@ exports.protect = expressAsyncHandler(async (req, res, next) => {
         req.headers.authorization.startsWith('Bearer')
     ) {
         token = req.headers.authorization.split(' ')[1];
-    } else if (req.cookies.auth) {
+    } else if (req.cookies?.auth) {
         token = req.cookies.auth;
     }
 
@@ -160,5 +164,24 @@ exports.changeBanStatus = expressAsyncHandler(async (req, res, next) => {
     res.status(200).json({
         status: true,
         message: user.ban ? 'user banned' : 'user is free',
+    });
+});
+
+exports.changeUserRole = expressAsyncHandler(async (req, res, next) => {
+    const { role } = req.body;
+    const { userId } = req.params;
+    await changeRoleSchema.validate({ role });
+    const user = await User.findByIdAndUpdate(userId, {
+        role,
+    });
+    if (!user) {
+        res.status(404).json({
+            status: false,
+            message: 'no user found',
+        });
+    }
+    res.status(200).json({
+        status: true,
+        message: `user role updated  to ${role}`,
     });
 });

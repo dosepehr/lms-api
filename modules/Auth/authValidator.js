@@ -42,9 +42,14 @@ const loginUserSchema = yup.object().shape({
         .string()
         .required('The password field is required.')
         .min(8, 'The password must be at least 8 characters long.'),
-    identifier: yup
-        .string()
-        .required('The identifier field is required.'),
+    identifier: yup.string().required('The identifier field is required.'),
 });
 
-module.exports = { loginUserSchema, signupUserSchema };
+const changeRoleSchema = yup.object().shape({
+    role: yup
+        .string()
+        .oneOf(['teacher', 'user'], 'Role must be either "teacher" or "user"')
+        .required('Role is required'),
+});
+
+module.exports = { loginUserSchema, signupUserSchema, changeRoleSchema };
