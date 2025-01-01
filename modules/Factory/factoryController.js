@@ -28,17 +28,16 @@ exports.addOne = (Model, validation) => {
     });
 };
 
-exports.updateOne = (Model, validate) => {
+exports.updateOne = (Model, validation) => {
     return expressAsyncHandler(async (req, res, next) => {
         const { id } = req.params;
-        if (validate) {
-            await validate(req.body);
+        if (validation) {
+            await validation.validate(req.body);
         }
         await Model.findByIdAndUpdate(id, req.body, {
             runValidators: true,
             new: true,
         });
-
         res.status(200).json({
             status: true,
             message: 'updated',
