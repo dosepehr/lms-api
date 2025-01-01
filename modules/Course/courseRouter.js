@@ -1,10 +1,13 @@
 const express = require('express');
-const { addCourse } = require('./courseController');
+const { addCourse, getCourses, getCourse } = require('./courseController');
 const { protect, restrictTo } = require('../Auth/authController');
 
 const courseRouter = express.Router();
 
-courseRouter.route('/').post(protect, restrictTo('admin'), addCourse);
-courseRouter.route('/:id');
+courseRouter
+    .route('/')
+    .get(getCourses)
+    .post(protect, restrictTo('admin'), addCourse);
+courseRouter.route('/:id').get(getCourse);
 
 module.exports = courseRouter;
