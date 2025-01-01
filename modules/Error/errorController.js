@@ -12,13 +12,17 @@ const handleDuplicateFieldsDB = (err) => {
 };
 
 const handleValidationErrorDB = (err) => {
-    const validatorError = err.errors;
-    const dbError = Object.values(err.errors).map((el) => el.message);
+    const dbError = Object.values(err.errors).map((el) => {
+        if (el.kind === 'ObjectId' && el.reason?.name === 'BSONError') {
+            return `The provided ${el.path} value ("${el.value}") is not a valid identifier.`;
+        }
+        return el.message;
+    });
 
-    const errors = Array.isArray(validatorError) ? validatorError : dbError;
-    const message = `Invalid input data`;
-    return new AppError(message, 400, errors);
+    const message = `Invalid input data.`;
+    return new AppError(message, 400, dbError);
 };
+
 
 const handleJWTError = () => new AppError('Invalid token', 401);
 const handleTokenExpiredError = () =>
