@@ -58,4 +58,5 @@ const updateCourseSchema = yup.object().shape({
 
 module.exports = {
     addCourseSchema,
+    updateCourseSchema,
 };
