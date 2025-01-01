@@ -5,12 +5,12 @@ const addCategorySchema = yup.object().shape({
         .string()
         .required('The slug field is required.')
         .min(3, 'The slug must be at least 3 characters long.')
-        .max(20, 'The slug must be at most 10 characters long.'),
+        .max(20, 'The slug must be at most 20 characters long.'),
     title: yup
         .string()
         .required('The title field is required.')
         .min(3, 'The title must be at least 3 characters long.')
-        .max(15, 'The title must be at most 10 characters long.'),
+        .max(15, 'The title must be at most 15 characters long.'),
 });
 
 const editCategorySchema = yup.object().shape({
