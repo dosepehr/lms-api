@@ -22,6 +22,7 @@ const bodyParser = require('body-parser');
 const hpp = require('hpp');
 const compression = require('compression');
 const authRouter = require('./modules/Auth/authRouter');
+const categoryRouter = require('./modules/Category/categoryRouter');
 
 const limiter = rateLimit({
     windowMs: 60 * 60 * 1000, // 15 minutes
@@ -74,7 +75,7 @@ app.route('/').all((_, res) => {
     });
 });
 app.use('/api/v1/auth', authRouter);
-
+app.use('/api/v1/category', categoryRouter);
 //* 404 route
 app.all('*', async (req, res, next) => {
     next(new AppError(`Can't find ${req.originalUrl} on this server`, 404));
