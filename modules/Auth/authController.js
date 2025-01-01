@@ -9,6 +9,7 @@ const {
     signupUserSchema,
     loginUserSchema,
     changeRoleSchema,
+    updateMeSchema,
 } = require('./authValidator');
 const comparePassword = require('../../utils/comparePassword');
 
@@ -154,10 +155,7 @@ exports.changeBanStatus = expressAsyncHandler(async (req, res, next) => {
         phone: formatPhoneNumber(phone),
     }).select('ban');
     if (!user) {
-        res.status(404).json({
-            status: false,
-            message: 'no user found with this mobile number',
-        });
+        return next(new AppError('no user found with this mobile number', 401));
     }
     user.ban = !user.ban;
     await user.save();
@@ -175,13 +173,28 @@ exports.changeUserRole = expressAsyncHandler(async (req, res, next) => {
         role,
     });
     if (!user) {
-        res.status(404).json({
-            status: false,
-            message: 'no user found',
-        });
+        return next(new AppError('no user found', 401));
     }
     res.status(200).json({
         status: true,
         message: `user role updated  to ${role}`,
+    });
+});
+
+exports.updateMe = expressAsyncHandler(async (req, res, next) => {
+    const userId = req.user.id;
+    if (!userId) {
+        return next(new AppError('no user found', 401));
+    }
+    await updateMeSchema.validate(req.body);
+    await User.findByIdAndUpdate(userId, {
+        name: req.body.name,
+        username: req.body.username,
+        email: req.body.email,
+        phone: req.body.phone,
+    });
+    res.status(200).json({
+        status: true,
+        message: 'user data updated',
     });
 });

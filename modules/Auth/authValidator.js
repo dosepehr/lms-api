@@ -52,4 +52,29 @@ const changeRoleSchema = yup.object().shape({
         .required('Role is required'),
 });
 
-module.exports = { loginUserSchema, signupUserSchema, changeRoleSchema };
+const updateMeSchema = yup.object().shape({
+    name: yup
+        .string()
+        .min(3, 'The name must be at least 3 characters long.')
+        .max(50, 'The name must be at most 50 characters long.'),
+    username: yup
+        .string()
+        .min(3, 'The username must be at least 3 characters long.')
+        .max(30, 'The username must be at most 30 characters long.'),
+
+    email: yup.string().email('Please provide a valid email address.'),
+
+    photo: yup.string().default('pathToDefaultImage'),
+    phone: yup
+        .string()
+        .matches(
+            /^\d{11}$/,
+            'Phone number must be exactly 11 digits and contain only numbers.',
+        ),
+});
+module.exports = {
+    loginUserSchema,
+    signupUserSchema,
+    changeRoleSchema,
+    updateMeSchema,
+};

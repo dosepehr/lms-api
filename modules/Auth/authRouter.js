@@ -6,6 +6,7 @@ const {
     signup,
     login,
     changeUserRole,
+    updateMe,
 } = require('./../Auth/authController');
 
 const authRouter = express.Router();
@@ -16,4 +17,5 @@ authRouter.route('/ban').put(protect, restrictTo('admin'), changeBanStatus);
 authRouter
     .route('/changeRole/:userId')
     .put(protect, restrictTo('admin'), changeUserRole);
+authRouter.route('/updateMe').put(protect, updateMe);
 module.exports = authRouter;
