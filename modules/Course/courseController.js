@@ -1,6 +1,12 @@
-const { addOne, getAll, getOne } = require('../Factory/factoryController');
+const {
+    addOne,
+    getAll,
+    getOne,
+    updateOne,
+    deleteOne,
+} = require('../Factory/factoryController');
 const Course = require('./courseModel');
-const { addCourseSchema } = require('./courseValidator');
+const { addCourseSchema, updateCourseSchema } = require('./courseValidator');
 
 exports.addCourse = addOne(Course, addCourseSchema);
 exports.getCourses = getAll(Course, {}, [
@@ -14,3 +20,6 @@ exports.getCourse = getOne(Course, {}, [
         path: 'category',
     },
 ]);
+
+exports.updateCourse = updateOne(Course, updateCourseSchema);
+exports.deleteCourse = deleteOne(Course);
