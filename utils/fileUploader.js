@@ -1,17 +1,23 @@
 const multer = require('multer');
 const path = require('path');
 
-const uploader = (validExtensions, maxFileSize) => {
+
+const uploader = (fields, maxFileSize) => {
     const storage = multer.memoryStorage(); // Use memory storage for optional processing
 
     const fileFilter = (req, file, cb) => {
+        const field = fields.find((f) => f.name === file.fieldname);
+        if (!field) {
+            return cb(new Error(`Unexpected field: ${file.fieldname}`), false);
+        }
+
         const ext = path.extname(file.originalname).toLowerCase();
-        if (validExtensions.includes(ext)) {
+        if (field.validExtensions.includes(ext)) {
             cb(null, true); // Accept the file
         } else {
             cb(
                 new Error(
-                    `Invalid file type. Allowed types: ${validExtensions.join(', ')}`,
+                    `Invalid file type for ${file.fieldname}. Allowed types: ${field.validExtensions.join(', ')}`,
                 ),
                 false,
             );

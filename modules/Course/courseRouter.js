@@ -18,7 +18,10 @@ courseRouter
     .post(
         protect,
         restrictTo('admin'),
-        uploader(['.png', '.jpg'], 3 * 1024 * 1024).single('cover'),
+        uploader(
+            [{ name: 'cover', validExtensions: ['.png', '.jpg'] }],
+            3 * 1024 * 1024,
+        ).single('cover'),
         resizeImage,
         addCourse,
     );

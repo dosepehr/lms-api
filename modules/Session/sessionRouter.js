@@ -18,7 +18,16 @@ sessionRouter
     .post(
         protect,
         restrictTo('admin'),
-        uploader(['.zip'], 7 * 1024 * 1024).single('source'),
+        uploader(
+            [
+                { name: 'source', validExtensions: ['.zip'] },
+                { name: 'videoUrl', validExtensions: ['.mp4'] },
+            ],
+            7 * 1024 * 1024, // 7 MB size limit
+        ).fields([
+            { name: 'source', maxCount: 1 },
+            { name: 'videoUrl', maxCount: 1 },
+        ]),
         saveFile,
         addSession,
     );

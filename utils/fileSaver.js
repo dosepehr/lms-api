@@ -3,14 +3,19 @@ const fs = require('fs');
 const expressAsyncHandler = require('express-async-handler');
 
 const saveFile = expressAsyncHandler(async (req, res, next) => {
-    if (!req.file) return next();
-    // TODO add crypto here
-    const filename = `${Date.now()}-${req.file.originalname}`;
-    const outputPath = path.join('public/uploads', filename);
+    if (!req.files) return next();
 
-    fs.writeFileSync(outputPath, req.file.buffer);
+    for (const fieldName in req.files) {
+        const file = req.files[fieldName][0]; // Each field has one file
+        const filename = `${Date.now()}-${file.originalname}`;
+        const outputPath = path.join('public/uploads', filename);
 
-    req.body[req.file.fieldname] = filename;
+        // Write file from buffer to disk
+        fs.writeFileSync(outputPath, file.buffer);
+
+        // Attach file name to request body
+        req.body[fieldName] = filename;
+    }
     next();
 });
 
