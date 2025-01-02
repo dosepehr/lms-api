@@ -2,7 +2,7 @@ const multer = require('multer');
 const path = require('path');
 const AppError = require('./AppError');
 
-const uploader = (validMimes, maxSize) => {
+exports.imageUploader = (validMimes, maxSize) => {
     const storage = multer.memoryStorage();
     const upload = multer({
         storage,
@@ -25,5 +25,3 @@ const uploader = (validMimes, maxSize) => {
     });
     return upload;
 };
-
-module.exports = uploader;

@@ -7,8 +7,8 @@ const {
     deleteCourse,
 } = require('./courseController');
 const { protect, restrictTo } = require('../Auth/authController');
-const uploader = require('../../utils/fileUploader');
-const { resizePhoto } = require('../../utils/resizePhoto');
+const { imageUploader } = require('../../utils/fileUploader');
+const { resizeImage } = require('../../utils/imageProcess');
 
 const courseRouter = express.Router();
 
@@ -18,8 +18,8 @@ courseRouter
     .post(
         protect,
         restrictTo('admin'),
-        uploader(['.png'], 3 * 1000 * 1000).single('cover'),
-        resizePhoto,
+        imageUploader(['.png'], 3 * 1000 * 1000).single('cover'),
+        resizeImage,
         addCourse,
     );
 courseRouter

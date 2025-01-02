@@ -1,7 +1,7 @@
 const expressAsyncHandler = require('express-async-handler');
 const sharp = require('sharp');
 
-exports.resizePhoto = expressAsyncHandler(async (req, res, next) => {
+exports.resizeImage = expressAsyncHandler(async (req, res, next) => {
     if (!req.file) return next();
     req.file.filename = `${Date.now()}-${req.user.id}.png`;
     await sharp(req.file.buffer)
@@ -14,7 +14,7 @@ exports.resizePhoto = expressAsyncHandler(async (req, res, next) => {
     req.body.cover = req.file.filename;
     next();
 });
-exports.resizePhotos = expressAsyncHandler(async (req, res, next) => {
+exports.resizeImages = expressAsyncHandler(async (req, res, next) => {
     if (!req.files) return next();
 
     req.body.images = [];
