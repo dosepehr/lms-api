@@ -7,13 +7,23 @@ const {
     deleteSession,
 } = require('./sessionController');
 const { protect, restrictTo } = require('../Auth/authController');
+const uploader = require('../../utils/fileUploader');
+const saveFile = require('../../utils/fileSaver');
 
 const sessionRouter = express.Router();
 
-sessionRouter.route('/')
+sessionRouter
+    .route('/')
     .get(getSessions)
-    .post(protect, restrictTo('admin'), addSession);
-sessionRouter.route('/:id')
+    .post(
+        protect,
+        restrictTo('admin'),
+        uploader(['.zip'], 7 * 1024 * 1024).single('source'),
+        saveFile,
+        addSession,
+    );
+sessionRouter
+    .route('/:id')
     .get(getSession)
     .put(protect, restrictTo('admin'), updateSession)
     .delete(protect, restrictTo('admin'), deleteSession);

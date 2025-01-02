@@ -16,13 +16,12 @@ const handleValidationErrorDB = (err) => {
         if (el.kind === 'ObjectId' && el.reason?.name === 'BSONError') {
             return `The provided ${el.path} value ("${el.value}") is not a valid identifier.`;
         }
-        return el.message;
+        return el.message || el;
     });
 
     const message = `Invalid input data.`;
     return new AppError(message, 400, dbError);
 };
-
 
 const handleJWTError = () => new AppError('Invalid token', 401);
 const handleTokenExpiredError = () =>

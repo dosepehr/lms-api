@@ -1,34 +1,42 @@
-const expressAsyncHandler = require('express-async-handler');
 const sharp = require('sharp');
+const path = require('path');
+const expressAsyncHandler = require('express-async-handler');
 
-exports.resizeImage = expressAsyncHandler(async (req, res, next) => {
+const resizeImage = expressAsyncHandler(async (req, res, next) => {
     if (!req.file) return next();
-    req.file.filename = `${Date.now()}-${req.user.id}.png`;
+    const filename = `${Date.now()}-cover.png`;
+    const outputPath = path.join('public/uploads', filename);
+
     await sharp(req.file.buffer)
         .resize(500, 500)
         .toFormat('png')
-        .png({
-            quality: 90,
-        })
-        .toFile(`public/uploads/${req.file.filename}`);
-    req.body.cover = req.file.filename;
+        .png({ quality: 90 })
+        .toFile(outputPath);
+
+    req.body[req.file.fieldname] = filename; // Attach file name to request body
     next();
 });
-exports.resizeImages = expressAsyncHandler(async (req, res, next) => {
-    if (!req.files) return next();
+
+const resizeImages = expressAsyncHandler(async (req, res, next) => {
+    if (!req.files || req.files.length === 0) return next();
 
     req.body.images = [];
-    // can use Promise.all too
-    req.files.map(async (file, i) => {
-        const filename = `tour-${req.params.id}-${Date.now()}-${i + 1}.png`;
-        req.body.images.push(filename);
-        await sharp(file.buffer)
-            .resize(500, 500)
-            .toFormat('png')
-            .png({
-                quality: 90,
-            })
-            .toFile(`public/uploads/${filename}`);
-    }),
-        next();
+    await Promise.all(
+        req.files.map(async (file, i) => {
+            const filename = `${Date.now()}-${i + 1}.png`;
+            const outputPath = path.join('public/uploads', filename);
+
+            await sharp(file.buffer)
+                .resize(500, 500)
+                .toFormat('png')
+                .png({ quality: 90 })
+                .toFile(outputPath);
+
+            req.body.images.push(filename);
+        }),
+    );
+
+    next();
 });
+
+module.exports = { resizeImage, resizeImages };
