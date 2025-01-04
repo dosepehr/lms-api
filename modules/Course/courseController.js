@@ -16,14 +16,28 @@ exports.getCourses = getAll(Course, {}, [
     },
 ]);
 
-exports.getCourse = getOne(Course, {}, [
-    {
-        path: 'category',
-    },
-    // virtual populate
-    { path: 'comments' },
-    // TODO populate user
-]);
+exports.getCourse = expressAsyncHandler(async (req, res, next) => {
+    const { id } = req.params;
+
+    const data = await Course.findById(id)
+        .populate('category')
+        .populate('comments');
+
+    if (!data) {
+        return res.status(404).json({
+            status: false,
+            message: 'Resource not found',
+        });
+    }
+    const otherCourses = await Course.find({
+        category: data.category._id,
+    });
+    res.status(200).json({
+        status: true,
+        data,
+        other: otherCourses,
+    });
+});
 
 exports.updateCourse = updateOne(Course, updateCourseSchema);
 exports.deleteCourse = deleteOne(Course);
