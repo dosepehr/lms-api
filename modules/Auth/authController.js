@@ -50,6 +50,7 @@ exports.protect = expressAsyncHandler(async (req, res, next) => {
     }
     // GRANT ACCESS TO PROTECTED ROUTE
     req.user = currentUser;
+    req.body.user = currentUser._id;
     next();
 });
 
