@@ -21,7 +21,11 @@ const categorySchema = new mongoose.Schema(
         timestamps: true,
     },
 );
-
+categorySchema.virtual('courses', {
+    ref: 'Course',
+    foreignField: 'category',
+    localField: '_id',
+});
 const Category = mongoose.model('Category', categorySchema);
 
 module.exports = Category;

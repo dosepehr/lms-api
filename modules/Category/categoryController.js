@@ -16,7 +16,12 @@ exports.addCategory = addOne(Category, addCategorySchema);
 exports.deleteCategory = deleteOne(Category);
 
 exports.getCategories = getAll(Category);
-exports.getCategory = getOne(Category);
+exports.getCategory = getOne(Category, {}, [
+    {
+        path: 'courses',
+        select: 'title',
+    },
+]);
 
 exports.updateCategory = updateOne(Category, editCategorySchema);
 
