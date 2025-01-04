@@ -41,6 +41,11 @@ const courseSchema = new mongoose.Schema(
     },
 );
 
+courseSchema.virtual('comments', {
+    ref: 'Comment',
+    foreignField: 'course',
+    localField: '_id',
+});
 const Course = mongoose.model('Course', courseSchema);
 
 module.exports = Course;

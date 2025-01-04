@@ -20,6 +20,9 @@ exports.getCourse = getOne(Course, {}, [
     {
         path: 'category',
     },
+    // virtual populate
+    { path: 'comments' },
+    // TODO populate user
 ]);
 
 exports.updateCourse = updateOne(Course, updateCourseSchema);

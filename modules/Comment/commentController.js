@@ -1,6 +1,6 @@
 const expressAsyncHandler = require('express-async-handler');
 const { addOne, getAll } = require('../Factory/factoryController');
-const Comment = require('./CommentModel');
+const Comment = require('./commentModel');
 
 exports.addComment = addOne(Comment);
 exports.getComments = getAll(Comment, {}, [
