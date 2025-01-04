@@ -5,6 +5,7 @@ const {
     getCategory,
     getCategories,
     updateCategory,
+    getCategoryBySlug,
 } = require('./categoryController');
 const { protect, restrictTo } = require('../Auth/authController');
 
@@ -19,5 +20,7 @@ categoryRouter
     .get(getCategory)
     .put(protect, restrictTo('admin'), updateCategory)
     .delete(protect, restrictTo('admin'), deleteCategory);
+
+categoryRouter.route('/slug/:slug').get(getCategoryBySlug);
 
 module.exports = categoryRouter;
