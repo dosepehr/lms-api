@@ -5,6 +5,7 @@ const {
     getCourse,
     updateCourse,
     deleteCourse,
+    getCourseBySlug,
 } = require('./courseController');
 const { protect, restrictTo } = require('../Auth/authController');
 const { resizeImage } = require('../../utils/imageProcess');
@@ -30,5 +31,5 @@ courseRouter
     .get(getCourse)
     .put(protect, restrictTo('admin'), updateCourse)
     .delete(protect, restrictTo('admin'), deleteCourse);
-
+courseRouter.route('/slug/:slug').get(getCourseBySlug);
 module.exports = courseRouter;
