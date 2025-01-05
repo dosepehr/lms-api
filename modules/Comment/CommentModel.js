@@ -20,14 +20,14 @@ const commentSchema = new mongoose.Schema(
             type: Number,
             default: 0,
         },
-        isAnswer: {
-            type: Number,
-            default: 0,
-        },
-        mainCommentID: {
-            type: mongoose.Types.ObjectId,
-            ref: 'Comment',
-        },
+        answers: [
+            {
+                type: mongoose.Types.ObjectId,
+                ref: 'Comment',
+                required: true,
+                trim: true,
+            },
+        ],
     },
     {
         toJSON: { virtuals: true },
