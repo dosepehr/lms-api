@@ -106,3 +106,19 @@ exports.deleteBasketItem = expressAsyncHandler(async (req, res, next) => {
         message: 'Course removed from basket successfully',
     });
 });
+
+exports.deleteMyBasket = expressAsyncHandler(async (req, res, next) => {
+    const basket = await Basket.findOne({
+        user: req.user._id,
+    });
+    if (!basket) {
+        return next(new AppError('You have no active basket', 404));
+    }
+    await Basket.deleteOne({
+        user: req.user._id,
+    });
+    res.status(200).json({
+        status: true,
+        message: 'basket deleted',
+    });
+});

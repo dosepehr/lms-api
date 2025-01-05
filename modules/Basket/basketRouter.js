@@ -4,6 +4,7 @@ const {
     getUserBasket,
     getMyBasket,
     deleteBasketItem,
+    deleteMyBasket,
 } = require('./basketController');
 const { protect, restrictTo } = require('../Auth/authController');
 
@@ -18,4 +19,5 @@ basketRouter.get(
 );
 basketRouter.get('/myBasket', protect, getMyBasket);
 basketRouter.post('/deleteItem', protect, deleteBasketItem);
+basketRouter.delete('/deleteBasket', protect, deleteMyBasket);
 module.exports = basketRouter;
