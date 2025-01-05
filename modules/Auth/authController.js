@@ -12,6 +12,7 @@ const {
     updateMeSchema,
 } = require('./authValidator');
 const comparePassword = require('../../utils/comparePassword');
+const Email = require('../../utils/Email');
 
 exports.protect = expressAsyncHandler(async (req, res, next) => {
     // 1) Getting token and check of it's there
@@ -98,6 +99,7 @@ exports.signup = expressAsyncHandler(async (req, res, next) => {
             status: true,
             token,
         });
+    await new Email({ email: 'spehdo@gmail.com' }, '').sendWelcome();
 });
 exports.login = expressAsyncHandler(async (req, res, next) => {
     const JWT_EXPIRES = +process.env.JWT_EXPIRES.slice(0, 2);
@@ -141,6 +143,7 @@ exports.login = expressAsyncHandler(async (req, res, next) => {
                 status: true,
                 token,
             });
+        await new Email({ email: 'spehdo@gmail.com' }, '').sendWelcome();
     }
     res.status(404).json({
         status: false,
