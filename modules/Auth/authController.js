@@ -199,3 +199,10 @@ exports.updateMe = expressAsyncHandler(async (req, res, next) => {
         message: 'user data updated',
     });
 });
+
+exports.getMe = expressAsyncHandler(async (req, res, next) => {
+    res.status(200).json({
+        status: true,
+        data: req.user,
+    });
+});
