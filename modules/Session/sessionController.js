@@ -29,7 +29,6 @@ exports.getSession = expressAsyncHandler(async (req, res, next) => {
             message: 'Resource not found',
         });
     }
-    // TODO handle user access to the course
     const checkUserAccess = async () => {
         const userBaskets = await Basket.find({
             user: req.user.id,
