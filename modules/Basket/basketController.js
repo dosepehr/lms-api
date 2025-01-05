@@ -40,12 +40,28 @@ exports.getUserBasket = expressAsyncHandler(async (req, res, next) => {
         user: user._id,
     })
         .populate('user')
-        .populate('courses'); 
+        .populate('courses');
     if (!userBasket) {
         return next(new AppError('this user has no active basket', 404));
     }
     res.status(200).json({
         status: true,
         basekt: userBasket,
+    });
+});
+
+exports.getMyBasket = expressAsyncHandler(async (req, res, next) => {
+    const user = req.user;
+    const basket = await Basket.findOne({
+        user: user.id,
+    })
+        .populate('user')
+        .populate('courses');
+    if (!basket) {
+        return next(new AppError('you have no active basket', 404));
+    }
+    res.status(200).json({
+        status: 200,
+        data: basket,
     });
 });
