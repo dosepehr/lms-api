@@ -26,6 +26,7 @@ const categoryRouter = require('./modules/Category/categoryRouter');
 const courseRouter = require('./modules/Course/courseRouter');
 const sessionRouter = require('./modules/Session/sessionRouter');
 const commentRouter = require('./modules/Comment/commentRouter');
+const basketRouter = require('./modules/Basket/BasketRouter');
 
 const limiter = rateLimit({
     windowMs: 60 * 60 * 1000, // 15 minutes
@@ -82,6 +83,7 @@ app.use('/api/v1/categories', categoryRouter);
 app.use('/api/v1/courses', courseRouter);
 app.use('/api/v1/sessions', sessionRouter);
 app.use('/api/v1/comments', commentRouter);
+app.use('/api/v1/basket', basketRouter);
 //* 404 route
 app.all('*', async (req, res, next) => {
     next(new AppError(`Can't find ${req.originalUrl} on this server`, 404));
