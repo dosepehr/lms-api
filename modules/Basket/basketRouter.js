@@ -1,5 +1,10 @@
 const express = require('express');
-const { addBasket, getUserBasket, getMyBasket } = require('./basketController');
+const {
+    addBasket,
+    getUserBasket,
+    getMyBasket,
+    deleteBasketItem,
+} = require('./basketController');
 const { protect, restrictTo } = require('../Auth/authController');
 
 const basketRouter = express.Router();
@@ -12,4 +17,5 @@ basketRouter.get(
     getUserBasket,
 );
 basketRouter.get('/myBasket', protect, getMyBasket);
+basketRouter.post('/deleteItem', protect, deleteBasketItem);
 module.exports = basketRouter;

@@ -65,3 +65,44 @@ exports.getMyBasket = expressAsyncHandler(async (req, res, next) => {
         data: basket,
     });
 });
+
+exports.deleteBasketItem = expressAsyncHandler(async (req, res, next) => {
+    const user = req.user;
+    const { course: courseId } = req.body;
+
+    if (!courseId) {
+        return next(new AppError('Please provide a course ID', 400));
+    }
+
+    const basket = await Basket.findOne({
+        user: user.id,
+    }).populate('courses');
+
+    if (!basket) {
+        return next(new AppError('You have no active basket', 404));
+    }
+
+    const courseExists = basket.courses.some(
+        (course) => course._id.toString() === courseId,
+    );
+    if (!courseExists) {
+        return next(new AppError('Course not found in the basket', 404));
+    }
+
+    basket.courses = basket.courses.filter(
+        (course) => course._id.toString() !== courseId,
+    );
+
+    await basket.save();
+    if (!basket.courses.length) {
+        await Basket.deleteOne({ _id: basket._id });
+        res.status(200).json({
+            status: true,
+            message: `user's basket deleted`,
+        });
+    }
+    res.status(200).json({
+        status: true,
+        message: 'Course removed from basket successfully',
+    });
+});
