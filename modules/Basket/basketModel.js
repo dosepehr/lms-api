@@ -22,6 +22,6 @@ const basketSchema = new mongoose.Schema(
         timestamps: true,
     },
 );
-const Basket = mongoose.model('Basket', basketSchema);
+const Basket = mongoose.models.Basket || mongoose.model('Basket', basketSchema);
 
 module.exports = Basket;

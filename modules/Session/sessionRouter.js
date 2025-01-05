@@ -33,7 +33,7 @@ sessionRouter
     );
 sessionRouter
     .route('/:id')
-    .get(getSession)
+    .get(protect, getSession)
     .put(protect, restrictTo('admin'), updateSession)
     .delete(protect, restrictTo('admin'), deleteSession);
 
