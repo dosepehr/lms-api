@@ -11,6 +11,10 @@ const basketSchema = new mongoose.Schema(
                 ref: 'Course',
             },
         ],
+        purchased: {
+            type: Boolean,
+            default: false,
+        },
     },
     {
         toJSON: { virtuals: true },

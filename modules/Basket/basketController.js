@@ -122,3 +122,21 @@ exports.deleteMyBasket = expressAsyncHandler(async (req, res, next) => {
         message: 'basket deleted',
     });
 });
+
+exports.purchaseBasket = expressAsyncHandler(async (req, res, next) => {
+    const { basketId } = req.params;
+    const basket = await Basket.findOne({
+        _id: basketId,
+    });
+    if (!basket) {
+        return next(new AppError('No basket found', 400));
+    }
+    //! handle purchasing process
+
+    basket.purchased = true;
+    basket.save();
+    res.status(200).json({
+        status: true,
+        message: 'You have access to the courses now',
+    });
+});
