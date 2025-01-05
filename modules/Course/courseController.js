@@ -22,8 +22,12 @@ exports.getCourse = expressAsyncHandler(async (req, res, next) => {
     const data = await Course.findById(id)
         .populate('category')
         .populate({
-            path: 'comments', 
+            path: 'comments',
             populate: { path: 'user', select: 'name email' },
+        })
+        .populate({
+            path: 'sessions',
+            select: 'title free',
         });
     if (!data) {
         return res.status(404).json({
