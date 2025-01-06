@@ -19,6 +19,7 @@ const mongoSanitize = require('express-mongo-sanitize');
 const helmet = require('helmet');
 const { xss } = require('express-xss-sanitizer');
 const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
 const hpp = require('hpp');
 const compression = require('compression');
 const authRouter = require('./modules/Auth/authRouter');
@@ -41,6 +42,7 @@ require('dotenv').config();
 require('./utils/connectDB');
 //* express app
 const app = express();
+app.use(cookieParser());
 app.use(express.json({ limit: '10kb' }));
 app.use(bodyParser.json());
 app.use(morgan('dev'));

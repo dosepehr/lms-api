@@ -209,3 +209,11 @@ exports.getMe = expressAsyncHandler(async (req, res, next) => {
         data: req.user,
     });
 });
+
+exports.logout = expressAsyncHandler(async (req, res, next) => {
+    res.clearCookie('auth');
+    res.status(200).json({
+        status: true,
+        message: 'You logged out',
+    });
+});
