@@ -211,6 +211,7 @@ exports.getMe = expressAsyncHandler(async (req, res, next) => {
 });
 
 exports.logout = expressAsyncHandler(async (req, res, next) => {
+    // signed cookie => hashing cookie
     res.clearCookie('auth');
     res.status(200).json({
         status: true,
